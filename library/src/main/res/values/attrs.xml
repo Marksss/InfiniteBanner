@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="InfiniteBannerView">
+        <attr name="bannerDividerWidth" format="dimension" />
+        <attr name="bannerInitialPage" format="integer" />
+        <attr name="bannerOutsidePercent" format="float" />
+        <attr name="bannerLoopInterval" format="string" />
+        <attr name="bannerScrollLock" format="boolean" />
+        <attr name="bannerScrollReverse" format="boolean" />
+    </declare-styleable>
+</resources>
