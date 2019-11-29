@@ -16,7 +16,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:bannerDividerWidth="16dp"
-        app:bannerOutsidePercent="0.18"
+        app:bannerForegroundWidthPercent="0.64"
         />
 
 </android.support.constraint.ConstraintLayout>
