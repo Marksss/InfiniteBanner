@@ -6,8 +6,6 @@ import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.FloatRange;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -22,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 可以无限循环的banner
+ * A banner view that can automatically or manually scroll in a loop
  * Created by Marksss on 2019/8/12.
  */
 public class InfiniteBannerView extends ViewGroup {
@@ -30,11 +28,9 @@ public class InfiniteBannerView extends ViewGroup {
     private long mLoopInterval = 3000;
     private AbsBannerAdapter mAdapter;
     private Handler mHandler = new Handler(Looper.getMainLooper());
-    private int mDividerWidth = 0; // 两个page之间的空白的间隔
-    private float mForegroundWidthPercent = 1f; // 当前page，即居中位置的item的宽度占比（0.34<=percent<=0.1）
-    private boolean mIsReverse; // false:正向,从右往左；true:反向,从左往右；默认false
-    private boolean mIsScrollLocked; // 是否禁止触摸拖动
-    private boolean mIsAutoScroll; // 是否在数据加载完成后自动滚动
+    private int mDividerWidth = 0;
+    private float mForegroundWidthPercent = 1f; // 0.34<=percent<=0.1
+    private boolean mIsReverse, mIsManuallyScrollLocked, mIsAutoScroll;
     private boolean mIsTouching, mIsAttachToWindow;
     private long mLastTouchTime, mLastScrollTime;
     private int mLastX, mLastDownX, mLastDownY;
@@ -62,22 +58,17 @@ public class InfiniteBannerView extends ViewGroup {
         init(context, attrs);
     }
 
-    public InfiniteBannerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs);
-    }
-
     private void init(Context context, AttributeSet attrs) {
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.InfiniteBannerView);
             mDividerWidth = a.getDimensionPixelSize(R.styleable.InfiniteBannerView_bannerDividerWidth, mDividerWidth);
             mPager.initPosition(a.getInt(R.styleable.InfiniteBannerView_bannerInitialPage, 0));
-            mIsScrollLocked = a.getBoolean(R.styleable.InfiniteBannerView_bannerScrollLock, false);
+            mIsManuallyScrollLocked = a.getBoolean(R.styleable.InfiniteBannerView_bannerManuallyScrollLock, false);
             mIsAutoScroll = a.getBoolean(R.styleable.InfiniteBannerView_bannerAutoScroll, false);
             mIsReverse = a.getBoolean(R.styleable.InfiniteBannerView_bannerScrollReverse, false);
-            mForegroundWidthPercent = a.getFloat(R.styleable.InfiniteBannerView_bannerForegroundWidthPercent, mForegroundWidthPercent);
-            if (mForegroundWidthPercent < 1f){
-                mForegroundWidthPercent = Math.max(mForegroundWidthPercent, 0.34f);
+            float foregroundWidthPercent = a.getFloat(R.styleable.InfiniteBannerView_bannerForegroundWidthPercent, mForegroundWidthPercent);
+            if (foregroundWidthPercent < 1f){
+                setForegroundWidthPercent(foregroundWidthPercent);
             }
             String s = a.getString(R.styleable.InfiniteBannerView_bannerLoopInterval);
             if (s != null) {
@@ -139,7 +130,7 @@ public class InfiniteBannerView extends ViewGroup {
         int outsideLength = (int) (getMeasuredWidth() * (1f - mForegroundWidthPercent) / 2);
         int periodLength = getPeriodLength(getMeasuredWidth());
         if (mPager.isSkippingPosition()) {
-            // 重新刷新
+            // refresh the layout after reset
             int head = mPager.mCurrentPosition - getDepthWithCache();
             int tail = mPager.mCurrentPosition + getDepthWithCache();
             while (head <= tail) {
@@ -153,11 +144,11 @@ public class InfiniteBannerView extends ViewGroup {
                 tail--;
             }
         } else if (mPager.isPreviousPosition()) {
-            // 前一页
+            // scroll to the previous position
             childLayout(getViewOnPosition(mPager.mPositionLastRelayout + getDepthWithCache()),
                     periodLength, outsideLength, mPager.mPositionLastRelayout - getDepthWithCache() - 1);
         } else if (mPager.isNextPosition()) {
-            // 下一页
+            // scroll to the next position
             childLayout(getViewOnPosition(mPager.mPositionLastRelayout - getDepthWithCache()),
                     periodLength, outsideLength, mPager.mPositionLastRelayout + getDepthWithCache() + 1);
         }
@@ -211,7 +202,7 @@ public class InfiniteBannerView extends ViewGroup {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!isScrollLocked()) {
+        if (!isManuallyScrollLocked()) {
             if (mVelocityTracker == null) {
                 mVelocityTracker = VelocityTracker.obtain();
             }
@@ -221,7 +212,7 @@ public class InfiniteBannerView extends ViewGroup {
         int y = (int) ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (!mScroller.isFinished() && !isScrollLocked()) {
+                if (!mScroller.isFinished() && !isManuallyScrollLocked()) {
                     mScroller.abortAnimation();
                 }
                 mLastX = mLastDownX = x;
@@ -229,7 +220,7 @@ public class InfiniteBannerView extends ViewGroup {
                 mIsTouching = true;
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (!isScrollLocked()) {
+                if (!isManuallyScrollLocked()) {
                     int dx = mLastX - x;
                     if (isCurrentScrollAllowed(mPager.mCurrentPosition, dx > 0)) {
                         scrollBy(dx, 0);
@@ -254,14 +245,14 @@ public class InfiniteBannerView extends ViewGroup {
                         && !performClick()) {
                     if (x > getWidth() * outsideEachPercent && x < getWidth() * (1 - outsideEachPercent)) {
                         handleClick();
-                    } else if (!isScrollLocked()) {
+                    } else if (!isManuallyScrollLocked()) {
                         if (x < getWidth() * outsideEachPercent) {
                             goPreviousPage();
                         } else {
                             goNextPage();
                         }
                     }
-                } else if (!isScrollLocked()) {
+                } else if (!isManuallyScrollLocked()) {
                     handleScroll();
                 }
                 touchFinished();
@@ -277,13 +268,10 @@ public class InfiniteBannerView extends ViewGroup {
         mVelocityTracker.computeCurrentVelocity(1000);
         int initVelocity = (int) mVelocityTracker.getXVelocity();
         if (initVelocity > mMaxVelocity) {
-            // 快速的向右滑，显示前一页
             goPreviousPage();
         } else if (initVelocity < -mMaxVelocity) {
-            // 快速的向左滑，显示后一页
             goNextPage();
         } else {
-            // 慢慢的滑动
             slowScrollToPage();
         }
     }
@@ -313,21 +301,21 @@ public class InfiniteBannerView extends ViewGroup {
     private void slowScrollToPage() {
         int periodLength = getPeriodLength(getWidth());
         int whichPage = (getScrollX() + periodLength / 2) / periodLength;
-        scrollToPage(whichPage);
+        scrollToPage(whichPage, false);
     }
 
     private int getPeriodLength(int width) {
         return (int) (width * mForegroundWidthPercent) + mDividerWidth;
     }
 
-    private void scrollToPage(int indexPage) {
+    private void scrollToPage(int indexPage, boolean reset) {
         int periodLength = getPeriodLength(getWidth());
         if (mPager.mCurrentPosition != indexPage) {
             long currentTime = System.currentTimeMillis();
-            // 在一次scroll完成后加一点时间的缓冲，切换太快会有视觉异常
-            // scroll坐标偏移异常，则返回原坐标
-            if (Math.abs(getScrollX() - mPager.mCurrentPosition * periodLength) <= 2 * periodLength
-                    && currentTime - mLastScrollTime > 300) {
+            // If it scroll too fast, just go back to the current position or it looks weird.
+            boolean changeable = Math.abs(getScrollX() - mPager.mCurrentPosition * periodLength) <= 2 * periodLength
+                    && currentTime - mLastScrollTime > 300;
+            if (changeable || reset) {
                 mPager.updateCurrentPosition(indexPage);
                 mLastScrollTime = currentTime;
                 if (!mOnPageChangeListeners.isEmpty()) {
@@ -372,50 +360,59 @@ public class InfiniteBannerView extends ViewGroup {
         return mIsReverse;
     }
 
+    /**
+     * @param reverse
+     * false:from right to left
+     * true:from left to right
+     */
     public void setReverse(boolean reverse) {
         mIsReverse = reverse;
     }
 
-    private boolean isScrollLocked() {
-        return mIsScrollLocked || getItemCount() <= 1;
+    private boolean isManuallyScrollLocked() {
+        return mIsManuallyScrollLocked || getItemCount() <= 1;
     }
 
     /**
-     * 是否禁止触摸拖动
+     * The manually scrolling will be locked or not
      * @param locked
      */
-    public void setScrollLocked(boolean locked) {
-        mIsScrollLocked = locked;
+    public void setManuallyScrollLocked(boolean locked) {
+        mIsManuallyScrollLocked = locked;
     }
 
     public boolean isAutoScroll() {
         return mIsAutoScroll;
     }
 
+    /**
+     * It will automatically scroll or not after the data is loaded
+     * @param autoScroll
+     */
     public void setAutoScroll(boolean autoScroll) {
         mIsAutoScroll = autoScroll;
     }
 
     /**
-     * scroll到下一页
+     * Scroll to the next position
      */
     public void goNextPage() {
         if (isCurrentScrollAllowed(mPager.mCurrentPosition, true)) {
-            scrollToPage(mPager.mCurrentPosition + 1);
+            scrollToPage(mPager.mCurrentPosition + 1, false);
         }
     }
 
     /**
-     * scroll到前一页
+     * Scroll to the previous position
      */
     public void goPreviousPage() {
         if (isCurrentScrollAllowed(mPager.mCurrentPosition, false)) {
-            scrollToPage(mPager.mCurrentPosition - 1);
+            scrollToPage(mPager.mCurrentPosition - 1, false);
         }
     }
 
     /**
-     * 恢复自动循环滚动
+     * Resume the scrolling animation
      */
     public void resumeLoop() {
         dispose();
@@ -425,7 +422,7 @@ public class InfiniteBannerView extends ViewGroup {
     }
 
     /**
-     * 暂停自动循环滚动
+     * Pause the scrolling animation
      */
     public void pauseLoop() {
         dispose();
@@ -463,7 +460,7 @@ public class InfiniteBannerView extends ViewGroup {
     private void reset() {
         relayoutAllViews();
         mPager.reset();
-        scrollToPage(mPager.mCurrentPosition);
+        scrollToPage(mPager.mCurrentPosition, true);
         startLoopIfNeeded();
         post(new Runnable() {
             @Override
@@ -493,7 +490,7 @@ public class InfiniteBannerView extends ViewGroup {
     }
 
     /**
-     * @return 预加载的层数，当前view占满全屏则只预加载2层，否则3层
+     * @return The layers that will be re-loaded
      */
     private int getDepthWithCache() {
         return mForegroundWidthPercent < 1f ? 3 : 2;
@@ -545,7 +542,7 @@ public class InfiniteBannerView extends ViewGroup {
         mOnItemClickListener = onItemClickListener;
     }
 
-    public void addOnPageChangeListener(@NonNull OnPageChangeListener onPageChangeListener) {
+    public void addOnPageChangeListener(OnPageChangeListener onPageChangeListener) {
         mOnPageChangeListeners.add(onPageChangeListener);
     }
 
@@ -557,6 +554,10 @@ public class InfiniteBannerView extends ViewGroup {
         return mDividerWidth;
     }
 
+    /**
+     * Space between two items
+     * @param dividerWidth
+     */
     public void setDividerWidth(int dividerWidth) {
         mDividerWidth = dividerWidth;
     }
@@ -565,14 +566,22 @@ public class InfiniteBannerView extends ViewGroup {
         return mForegroundWidthPercent;
     }
 
-    public void setForegroundWidthPercent(@FloatRange(from=0.34f, to=1f) float foregroundWidthPercent) {
-        mForegroundWidthPercent = foregroundWidthPercent;
+    /**
+     * The width
+     * @param foregroundWidthPercent
+     */
+    public void setForegroundWidthPercent(float foregroundWidthPercent) {
+        mForegroundWidthPercent = Math.max(Math.min(foregroundWidthPercent, 1f), 0.34f);
     }
 
     public long getLoopInterval() {
         return mLoopInterval;
     }
 
+    /**
+     * Time interval between automatically scrolling animations
+     * @param loopInterval (millisecond)
+     */
     public void setLoopInterval(long loopInterval) {
         mLoopInterval = loopInterval;
     }
@@ -598,21 +607,23 @@ public class InfiniteBannerView extends ViewGroup {
     }
 
     public static interface OnPageChangeListener {
+        // See OnPageChangeListener in ViewPager
         void onPageScrolled(int position, float positionOffset, int positionOffsetPixels);
         void onPageSelected(int position);
     }
 
     public static interface ScrollIntercepter {
         /**
-         * @param position 当前的位置
-         * @param forward true：正向运动；false：反向运动
-         * @return true：拦截
+         * @param position current
+         * @param forward true：from right to left；false：from left to right
+         * @return intercept or not
          */
         boolean onScrollIntercept(int position, boolean forward);
     }
 
     public interface PageTransformer {
-        void transformPage(@NonNull View view, float arg);
+        // See PageTransformer in ViewPager
+        void transformPage(View view, float arg);
     }
 
     private static class Pager {

@@ -23,6 +23,12 @@ android {
 
 }
 
+ext {
+    PUBLISH_GROUP_ID = 'com.github.markshawn'
+    PUBLISH_ARTIFACT_ID = 'infinite-banner'
+    PUBLISH_VERSION = '0.9.0'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -31,3 +37,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
+
+apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'

@@ -5,7 +5,7 @@
         <attr name="bannerInitialPage" format="integer" />
         <attr name="bannerForegroundWidthPercent" format="float" />
         <attr name="bannerLoopInterval" format="string" />
-        <attr name="bannerScrollLock" format="boolean" />
+        <attr name="bannerManuallyScrollLock" format="boolean" />
         <attr name="bannerScrollReverse" format="boolean" />
         <attr name="bannerAutoScroll" format="boolean" />
     </declare-styleable>
