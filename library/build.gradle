@@ -24,9 +24,23 @@ android {
 }
 
 ext {
-    PUBLISH_GROUP_ID = 'com.github.markshawn'
-    PUBLISH_ARTIFACT_ID = 'infinite-banner'
-    PUBLISH_VERSION = '0.9.0'
+    package_repo = 'com.github.markshawn'
+    package_type = 'aar'
+    package_group = 'com.github.markshawn'
+    package_artifact = 'infinite-banner'
+    package_version = '0.9.1'
+    package_description = 'An infinite banner for Android'
+
+    siteUrl = 'https://github.com/Marksss/InfiniteBanner'
+    gitUrl = 'https://github.com/Marksss/InfiniteBanner.git'
+
+    developerId = 'markshawn'
+    developerName = 'markshawn'
+    developerEmail = 'sxl.grgl@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = 'Apache-2.0'
 }
 
 dependencies {
@@ -38,4 +52,4 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
 
-apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'
+apply from:'https://raw.githubusercontent.com/Jude95/JCenter/v2/bintray.gradle'
