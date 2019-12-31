@@ -13,11 +13,11 @@ InfiniteBanner是一个能够无限轮播的banner，它的用法简单而且与
 ``` implementation 'com.github.markshawn:infinite-banner:0.9.1' ```
 ### XML中的代码
 ```
-    <com.github.infinitebanner.InfiniteBannerView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-		app:bannerAutoScroll="true"
-        />
+<com.github.infinitebanner.InfiniteBannerView
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    app:bannerAutoScroll="true"
+    />
 ```
 如果想让banner自动开启轮播，只需将bannerAutoScroll设置为true即可。其他可能会用到的属性值如下：
 - bannerDividerWidth：每个子View之间的间隔距离；
@@ -33,19 +33,19 @@ InfiniteBanner是一个能够无限轮播的banner，它的用法简单而且与
 public class MyBannerAdapter extends AbsBannerAdapter {
     @Override
     public int getCount() {
-		//总数
+    //总数
         ...
     }
 
     @Override
     protected View makeView(Context context) {
-		// 创建子view
+    // 创建子view
         ...
     }
 
     @Override
     protected void bind(View view, int position) {
-        // 子view与数据绑定并展示相应内容
+    // 子view与数据绑定并展示相应内容
 		...
     }
 }
@@ -62,39 +62,39 @@ myBannerAdapter.notifyDataSetChanged()
 ### 点击事件
 ```
 infiniteBannerView.setOnItemClickListener(new InfiniteBannerView.OnItemClickListener() {
-            @Override
-            public void click(InfiniteBannerView view, int position) {
-                ...
-            }
-        });
+    @Override
+    public void click(InfiniteBannerView view, int position) {
+        ...
+    }
+});
 ```
 
 ### 动画效果
 和ViewPager类似，只要添加transformer即可：
 ```
 infiniteBannerView.setPageTransformer(new InfiniteBannerView.PageTransformer() {
-            @Override
-            public void transformPage(@NonNull View view, float offset) {
-                ...
-            }
-        });
+    @Override
+    public void transformPage(@NonNull View view, float offset) {
+        ...
+    }
+});
 ```
 
 ### 指示器
 本库中并没有添加任何indicator，如果想加indicator，可以用如下类似ViewPager的方式很轻松地添加自己喜欢的indicator（Demo中的indicator是一个开源库[PageIndicatorView](https://github.com/romandanylyk/PageIndicatorView "PageIndicatorView")）：
 ```
 infiniteBannerView_1.addOnPageChangeListener(new InfiniteBannerView.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-				...
-            }
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        ...
+    }
 
-            @Override
-            public void onPageSelected(int position) {
-                ...
-            }
-        });
+    @Override
+    public void onPageSelected(int position) {
+        ...
+    }
+});
 ```
 
 ## 许可证
-AutoSwitchView基于 [Apache License Version 2.0](LICENSE) 发布。
+InfiniteBanner基于 [Apache License Version 2.0](LICENSE) 发布。

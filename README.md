@@ -14,11 +14,11 @@ InfiniteBanner is a view that can automatically or manually scroll in a loop for
 ``` implementation 'com.github.markshawn:infinite-banner:0.9.1' ```
 ### Code in XML
 ```
-    <com.github.infinitebanner.InfiniteBannerView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-		app:bannerAutoScroll="true"
-        />
+<com.github.infinitebanner.InfiniteBannerView
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    app:bannerAutoScroll="true"
+    />
 ```
 If you want it to scroll automatically, just set bannerAutoScroll true. Some other attributes that may be used:
 - bannerDividerWidth：distance between child views；
@@ -35,27 +35,31 @@ Create your own BannerAdapter：
 public class MyBannerAdapter extends AbsBannerAdapter {
     @Override
     public int getCount() {
-		//total count
+    //total count
         ...
     }
 
     @Override
     protected View makeView(Context context) {
-		// create child view if needed
+    // create child view if needed
         ...
     }
 
     @Override
     protected void bind(View view, int position) {
-        // bind view and data together and show whatever needed
+    // bind view and data together and show whatever needed
 		...
     }
 }
 ```
-```infiniteBannerView.setAdapter(new MyBannerAdapter());```
+```
+infiniteBannerView.setAdapter(new MyBannerAdapter());
+```
 When you need to refresh your data：
 
-```myBannerAdapter.notifyDataSetChanged()```
+```
+myBannerAdapter.notifyDataSetChanged()
+```
 
 ### Click listener
 ```
@@ -71,27 +75,27 @@ infiniteBannerView.setOnItemClickListener(new InfiniteBannerView.OnItemClickList
 Similar to ViewPager，you just need to add transformer：
 ```
 infiniteBannerView.setPageTransformer(new InfiniteBannerView.PageTransformer() {
-            @Override
-            public void transformPage(@NonNull View view, float offset) {
-                ...
-            }
-        });
+    @Override
+    public void transformPage(@NonNull View view, float offset) {
+        ...
+    }
+});
 ```
 
 ### Indicator
 There is no any indicators in this library. If you need one, you can add whatever indicator you want as follows（indicator in demo is another open source library[PageIndicatorView](https://github.com/romandanylyk/PageIndicatorView "PageIndicatorView")）：
 ```
 infiniteBannerView_1.addOnPageChangeListener(new InfiniteBannerView.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-				...
-            }
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        ...
+    }
 
-            @Override
-            public void onPageSelected(int position) {
-                ...
-            }
-        });
+    @Override
+    public void onPageSelected(int position) {
+        ...
+    }
+});
 ```
 ## License
-AutoSwitchView is released under the [Apache License Version 2.0](LICENSE).
+InfiniteBanner is released under the [Apache License Version 2.0](LICENSE).
