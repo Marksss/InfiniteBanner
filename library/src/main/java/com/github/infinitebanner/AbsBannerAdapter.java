@@ -29,7 +29,7 @@ public abstract class AbsBannerAdapter {
 
     protected abstract int getCount();
 
-    protected abstract View makeView(Context context, int position);
+    protected abstract View makeView(Context context);
 
     protected abstract void bind(View view, int position);
 }

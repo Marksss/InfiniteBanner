@@ -18,7 +18,7 @@ public class BannerAdapter extends AbsBannerAdapter {
     }
 
     @Override
-    protected View makeView(Context context, int position) {
+    protected View makeView(Context context) {
         ImageView imageView = new ImageView(context);
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
