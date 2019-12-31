@@ -16,8 +16,7 @@ InfiniteBanner是一个能够无限轮播的banner，它的用法简单而且与
 <com.github.infinitebanner.InfiniteBannerView
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    app:bannerAutoScroll="true"
-    />
+    app:bannerAutoScroll="true"/>
 ```
 如果想让banner自动开启轮播，只需将bannerAutoScroll设置为true即可。其他可能会用到的属性值如下：
 - bannerDividerWidth：每个子View之间的间隔距离；
@@ -33,20 +32,20 @@ InfiniteBanner是一个能够无限轮播的banner，它的用法简单而且与
 public class MyBannerAdapter extends AbsBannerAdapter {
     @Override
     public int getCount() {
-    //总数
+        //总数
         ...
     }
 
     @Override
     protected View makeView(Context context) {
-    // 创建子view
+        // 创建子view
         ...
     }
 
     @Override
     protected void bind(View view, int position) {
-    // 子view与数据绑定并展示相应内容
-		...
+        // 子view与数据绑定并展示相应内容
+        ...
     }
 }
 ```

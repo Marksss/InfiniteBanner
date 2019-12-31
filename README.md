@@ -17,8 +17,7 @@ InfiniteBanner is a view that can automatically or manually scroll in a loop for
 <com.github.infinitebanner.InfiniteBannerView
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    app:bannerAutoScroll="true"
-    />
+    app:bannerAutoScroll="true"/>
 ```
 If you want it to scroll automatically, just set bannerAutoScroll true. Some other attributes that may be used:
 - bannerDividerWidth：distance between child views；
@@ -35,20 +34,20 @@ Create your own BannerAdapter：
 public class MyBannerAdapter extends AbsBannerAdapter {
     @Override
     public int getCount() {
-    //total count
+        //total count
         ...
     }
 
     @Override
     protected View makeView(Context context) {
-    // create child view if needed
+        // create child view if needed
         ...
     }
 
     @Override
     protected void bind(View view, int position) {
-    // bind view and data together and show whatever needed
-		...
+        // bind view and data together and show whatever needed
+        ...
     }
 }
 ```
@@ -64,11 +63,11 @@ myBannerAdapter.notifyDataSetChanged()
 ### Click listener
 ```
 infiniteBannerView.setOnItemClickListener(new InfiniteBannerView.OnItemClickListener() {
-            @Override
-            public void click(InfiniteBannerView view, int position) {
-                ...
-            }
-        });
+    @Override
+    public void click(InfiniteBannerView view, int position) {
+        ...
+    }
+});
 ```
 
 ### Animation
@@ -83,7 +82,7 @@ infiniteBannerView.setPageTransformer(new InfiniteBannerView.PageTransformer() {
 ```
 
 ### Indicator
-There is no any indicators in this library. If you need one, you can add whatever indicator you want as follows（indicator in demo is another open source library[PageIndicatorView](https://github.com/romandanylyk/PageIndicatorView "PageIndicatorView")）：
+There is no any indicators in this library. If you need one, you can add whatever indicator you want as follows（indicator in demo is another open source library [PageIndicatorView](https://github.com/romandanylyk/PageIndicatorView "PageIndicatorView")）：
 ```
 infiniteBannerView_1.addOnPageChangeListener(new InfiniteBannerView.OnPageChangeListener() {
     @Override
