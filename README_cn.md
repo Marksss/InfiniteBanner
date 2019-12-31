@@ -5,9 +5,9 @@
 [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
-InfiniteBanner是一个能够无限轮播的banner，它的用法与ViewPager非常类似，但它解决了ViewPager无法无限轮播的痛点。同时，它的内部是以子控件复用的形式实现，在无限轮播的同时并不会消耗过多的内存。
+InfiniteBanner是一个能够无限轮播的banner，它的用法简单而且与ViewPager非常类似，但它也解决了ViewPager无法无限轮播的痛点。同时，它的内部是以子控件复用的形式实现，在无限轮播的同时并不会消耗过多的内存。
 
-![demo-gif](https://github.com/Marksss/AndroidAutoSwitcher/blob/master/gif/demo.gif)
+![demo-gif](https://github.com/Marksss/InfiniteBanner/blob/master/gif/demo.gif)
 ## 用法
 ### 将以下依赖添加到 `build.gradle` 文件中
 ``` implementation 'com.github.markshawn:infinite-banner:0.9.1' ```
@@ -71,6 +71,22 @@ infiniteBannerView.setOnItemClickListener(new InfiniteBannerView.OnItemClickList
 infiniteBannerView.setPageTransformer(new InfiniteBannerView.PageTransformer() {
             @Override
             public void transformPage(@NonNull View view, float offset) {
+                ...
+            }
+        });
+```
+
+### 指示器
+本库中并没有添加任何indicator，如果想加indicator，可以用如下类似ViewPager的方式很轻松地添加自己喜欢的indicator（Demo中的indicator是一个开源库[PageIndicatorView](https://github.com/romandanylyk/PageIndicatorView "PageIndicatorView")）：
+```
+infiniteBannerView_1.addOnPageChangeListener(new InfiniteBannerView.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+				...
+            }
+
+            @Override
+            public void onPageSelected(int position) {
                 ...
             }
         });
