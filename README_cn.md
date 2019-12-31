@@ -50,10 +50,14 @@ public class MyBannerAdapter extends AbsBannerAdapter {
     }
 }
 ```
-```infiniteBannerView.setAdapter(new MyBannerAdapter());```
+```
+infiniteBannerView.setAdapter(new MyBannerAdapter());
+```
 当需要刷新数据时：
 
-```myBannerAdapter.notifyDataSetChanged()```
+```
+myBannerAdapter.notifyDataSetChanged()
+```
 
 ### 点击事件
 ```
@@ -66,7 +70,7 @@ infiniteBannerView.setOnItemClickListener(new InfiniteBannerView.OnItemClickList
 ```
 
 ### 动画效果
-和ViewPager类似，只要添加tansformer即可：
+和ViewPager类似，只要添加transformer即可：
 ```
 infiniteBannerView.setPageTransformer(new InfiniteBannerView.PageTransformer() {
             @Override
