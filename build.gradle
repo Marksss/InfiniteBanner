@@ -19,7 +19,7 @@ allprojects {
         mavenCentral()
         google()
         jcenter()
-        maven { url "https://bintray.com/markshawn" }
+//        maven { url "https://bintray.com/markshawn" }
 
     }
 }
