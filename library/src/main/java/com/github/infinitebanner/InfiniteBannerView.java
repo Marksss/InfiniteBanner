@@ -356,6 +356,19 @@ public class InfiniteBannerView extends ViewGroup {
         }
     }
 
+    public void setInitPosition(int position) {
+        mPager.initPosition(position);
+        reset();
+    }
+
+    public int getInitPostion() {
+        return mPager.mInitialPosition;
+    }
+
+    public int getCurrentPosition() {
+        return mPager.mCurrentPosition;
+    }
+
     public boolean isReverse() {
         return mIsReverse;
     }
@@ -460,11 +473,11 @@ public class InfiniteBannerView extends ViewGroup {
     private void reset() {
         relayoutAllViews();
         mPager.reset();
-        scrollToPage(mPager.mCurrentPosition, true);
-        startLoopIfNeeded();
         post(new Runnable() {
             @Override
             public void run() {
+                scrollToPage(mPager.mCurrentPosition, true);
+                startLoopIfNeeded();
                 onPageScrolledInternal(mPager.mCurrentPosition, 0, 0);
             }
         });

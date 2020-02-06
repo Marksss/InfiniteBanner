@@ -28,7 +28,7 @@ ext {
     package_type = 'aar'
     package_group = 'com.github.markshawn'
     package_artifact = 'infinite-banner'
-    package_version = '0.9.2'
+    package_version = '0.9.3'
     package_description = 'An infinite banner for Android'
 
     siteUrl = 'https://github.com/Marksss/InfiniteBanner'
@@ -52,4 +52,4 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
 }
 
-apply from:'https://raw.githubusercontent.com/Jude95/JCenter/v2/bintray.gradle'
+apply from:'upload.gradle'

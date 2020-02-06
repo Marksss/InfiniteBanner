@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, ""+position, Toast.LENGTH_SHORT).show();
             }
         });
+        infiniteBannerView_0.setInitPosition(1);
 
         InfiniteBannerView infiniteBannerView_1 = findViewById(R.id.infinite_banner_1);
         infiniteBannerView_1.setAdapter(new BannerAdapter());
