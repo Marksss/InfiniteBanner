@@ -495,7 +495,7 @@ public class InfiniteBannerView extends ViewGroup {
         for (int i = 0; i <= getDepthWithCache() * 2; i++) {
             View view = mViewsMap.get(i);
             if (view == null) {
-                view = mAdapter.makeView(getContext());
+                view = mAdapter.makeView(this);
                 mViewsMap.put(i, view);
             }
             super.addView(view);

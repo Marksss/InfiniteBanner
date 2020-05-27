@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.infinitebanner.AbsBannerAdapter;
+import com.github.infinitebanner.InfiniteBannerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +19,8 @@ public class BannerAdapter extends AbsBannerAdapter {
     }
 
     @Override
-    protected View makeView(Context context) {
-        ImageView imageView = new ImageView(context);
+    protected View makeView(InfiniteBannerView parent) {
+        ImageView imageView = new ImageView(parent.getContext());
         imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         return imageView;

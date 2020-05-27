@@ -11,7 +11,7 @@ InfiniteBanner is a view that can automatically or manually scroll in a loop for
 ![demo-gif](https://github.com/Marksss/InfiniteBanner/blob/master/gif/demo.gif)
 ## Usage
 ### Add the dependency to your project `build.gradle` file
-``` implementation 'com.github.markshawn:infinite-banner:0.9.3' ```
+``` implementation 'com.github.markshawn:infinite-banner:1.0.0' ```
 ### Code in XML
 ```
 <com.github.infinitebanner.InfiniteBannerView
@@ -39,7 +39,7 @@ public class MyBannerAdapter extends AbsBannerAdapter {
     }
 
     @Override
-    protected View makeView(Context context) {
+    protected View makeView(InfiniteBannerView parent) {
         // create child view if needed
         ...
     }
