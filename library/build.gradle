@@ -1,14 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
 
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 30
+        versionCode 11
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -23,30 +23,8 @@ android {
 
 }
 
-ext {
-    package_repo = 'com.github.markshawn'
-    package_type = 'aar'
-    package_group = 'com.github.markshawn'
-    package_artifact = 'infinite-banner'
-    package_version = '1.0.0'
-    package_description = 'An infinite banner for Android'
-
-    siteUrl = 'https://github.com/Marksss/InfiniteBanner'
-    gitUrl = 'https://github.com/Marksss/InfiniteBanner.git'
-
-    developerId = 'markshawn'
-    developerName = 'markshawn'
-    developerEmail = 'sxl.grgl@gmail.com'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = 'Apache-2.0'
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     testImplementation 'junit:junit:4.12'
 }
-
-apply from:'upload.gradle'

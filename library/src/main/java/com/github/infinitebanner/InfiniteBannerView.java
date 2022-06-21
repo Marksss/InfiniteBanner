@@ -24,10 +24,11 @@ import java.util.List;
  * Created by Marksss on 2019/8/12.
  */
 public class InfiniteBannerView extends ViewGroup {
-    private Pager mPager = new Pager();
+    private static final int MAX_SCROLL_X = Integer.MAX_VALUE - Integer.MAX_VALUE >> 3;
+    private final Pager mPager = new Pager();
     private long mLoopInterval = 3000;
     private AbsBannerAdapter mAdapter;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private final Handler mHandler = new Handler(Looper.getMainLooper());
     private int mDividerWidth = 0;
     private float mForegroundWidthPercent = 1f; // 0.34<=percent<=0.1
     private boolean mIsReverse, mIsManuallyScrollLocked, mIsAutoScroll;
@@ -35,7 +36,6 @@ public class InfiniteBannerView extends ViewGroup {
     private long mLastTouchTime, mLastScrollTime;
     private int mLastX, mLastDownX, mLastDownY;
     private Scroller mScroller;
-    private VelocityTracker mVelocityTracker;
     private int mTouchSlop, mMaxVelocity;
     private OnItemClickListener mOnItemClickListener;
     private List<OnPageChangeListener> mOnPageChangeListeners = new ArrayList<>();
@@ -202,12 +202,6 @@ public class InfiniteBannerView extends ViewGroup {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (!isManuallyScrollLocked()) {
-            if (mVelocityTracker == null) {
-                mVelocityTracker = VelocityTracker.obtain();
-            }
-            mVelocityTracker.addMovement(ev);
-        }
         int x = (int) ev.getX();
         int y = (int) ev.getY();
         switch (ev.getAction()) {
@@ -246,14 +240,10 @@ public class InfiniteBannerView extends ViewGroup {
                     if (x > getWidth() * outsideEachPercent && x < getWidth() * (1 - outsideEachPercent)) {
                         handleClick();
                     } else if (!isManuallyScrollLocked()) {
-                        if (x < getWidth() * outsideEachPercent) {
-                            goPreviousPage();
-                        } else {
-                            goNextPage();
-                        }
+                        slowScrollToPage();
                     }
                 } else if (!isManuallyScrollLocked()) {
-                    handleScroll();
+                    handleScroll(x);
                 }
                 touchFinished();
                 break;
@@ -264,12 +254,10 @@ public class InfiniteBannerView extends ViewGroup {
         return true;
     }
 
-    private void handleScroll() {
-        mVelocityTracker.computeCurrentVelocity(1000);
-        int initVelocity = (int) mVelocityTracker.getXVelocity();
-        if (initVelocity > mMaxVelocity) {
+    private void handleScroll(int x) {
+        if (x - mLastDownX > 50) {
             goPreviousPage();
-        } else if (initVelocity < -mMaxVelocity) {
+        } else if (mLastDownX - x > 50) {
             goNextPage();
         } else {
             slowScrollToPage();
@@ -277,10 +265,6 @@ public class InfiniteBannerView extends ViewGroup {
     }
 
     private void touchFinished() {
-        if (mVelocityTracker != null) {
-            mVelocityTracker.recycle();
-            mVelocityTracker = null;
-        }
         mIsTouching = false;
         mLastTouchTime = System.currentTimeMillis();
     }
@@ -301,37 +285,37 @@ public class InfiniteBannerView extends ViewGroup {
     private void slowScrollToPage() {
         int periodLength = getPeriodLength(getWidth());
         int whichPage = (getScrollX() + periodLength / 2) / periodLength;
-        scrollToPage(whichPage, false);
+        scrollToPage(whichPage);
     }
 
     private int getPeriodLength(int width) {
         return (int) (width * mForegroundWidthPercent) + mDividerWidth;
     }
 
-    private void scrollToPage(int indexPage, boolean reset) {
+    private void scrollToPage(int indexPage) {
+        int loopIndex = getLoopIndex(indexPage);
+        if (loopIndex == mPager.mInitialPosition && Math.abs(getScrollX()) > MAX_SCROLL_X) {
+            reset();
+            return;
+        }
         int periodLength = getPeriodLength(getWidth());
         if (mPager.mCurrentPosition != indexPage) {
             long currentTime = System.currentTimeMillis();
             // If it scroll too fast, just go back to the current position or it looks weird.
             boolean changeable = Math.abs(getScrollX() - mPager.mCurrentPosition * periodLength) <= 2 * periodLength
                     && currentTime - mLastScrollTime > 300;
-            if (changeable || reset) {
+            if (changeable) {
                 mPager.updateCurrentPosition(indexPage);
                 mLastScrollTime = currentTime;
                 if (!mOnPageChangeListeners.isEmpty()) {
                     for (OnPageChangeListener onPageChangeListener : mOnPageChangeListeners) {
-                        onPageChangeListener.onPageSelected(getLoopIndex(indexPage));
+                        onPageChangeListener.onPageSelected(loopIndex);
                     }
                 }
             }
         }
         int dx = mPager.mCurrentPosition * periodLength - getScrollX();
-        if (Math.abs(dx) < periodLength * 3 / 2) {
-            mScroller.startScroll(getScrollX(), 0, dx, 0, Math.abs(dx));
-            invalidate();
-        } else {
-            scrollTo(mPager.mCurrentPosition * periodLength, 0);
-        }
+        mScroller.startScroll(getScrollX(), 0, dx, 0, Math.abs(dx));
         requestLayout();
     }
 
@@ -411,7 +395,7 @@ public class InfiniteBannerView extends ViewGroup {
      */
     public void goNextPage() {
         if (isCurrentScrollAllowed(mPager.mCurrentPosition, true)) {
-            scrollToPage(mPager.mCurrentPosition + 1, false);
+            scrollToPage(mPager.mCurrentPosition + 1);
         }
     }
 
@@ -420,7 +404,7 @@ public class InfiniteBannerView extends ViewGroup {
      */
     public void goPreviousPage() {
         if (isCurrentScrollAllowed(mPager.mCurrentPosition, false)) {
-            scrollToPage(mPager.mCurrentPosition - 1, false);
+            scrollToPage(mPager.mCurrentPosition - 1);
         }
     }
 
@@ -476,9 +460,16 @@ public class InfiniteBannerView extends ViewGroup {
         post(new Runnable() {
             @Override
             public void run() {
-                scrollToPage(mPager.mCurrentPosition, true);
+                int periodLength = getPeriodLength(getWidth());
+                scrollTo(mPager.mInitialPosition * periodLength, 0);
+                requestLayout();
+                if (!mOnPageChangeListeners.isEmpty()) {
+                    for (OnPageChangeListener onPageChangeListener : mOnPageChangeListeners) {
+                        onPageChangeListener.onPageSelected(mPager.mInitialPosition);
+                    }
+                }
+                onPageScrolledInternal(mPager.mInitialPosition, 0, 0);
                 startLoopIfNeeded();
-                onPageScrolledInternal(mPager.mCurrentPosition, 0, 0);
             }
         });
     }
