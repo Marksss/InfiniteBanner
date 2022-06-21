@@ -4,14 +4,14 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
-[![Download](https://api.bintray.com/packages/markshawn/com.github.markshawn/infinite-banner/images/download.svg)](https://bintray.com/markshawn/com.github.markshawn/infinite-banner/_latestVersion)
+[![](https://jitpack.io/v/Marksss/InfiniteBanner.svg)](https://jitpack.io/#Marksss/InfiniteBanner)
 
 InfiniteBanner是一个能够无限轮播的banner，它的用法简单而且与ViewPager非常类似，但它也解决了ViewPager无法无限轮播的痛点。同时，它的内部是以子控件复用的形式实现，在无限轮播的同时并不会消耗过多的内存。
 
 ![demo-gif](https://github.com/Marksss/InfiniteBanner/blob/master/gif/demo.gif)
 ## 用法
 ### 将以下依赖添加到 `build.gradle` 文件中
-``` implementation 'com.github.markshawn:infinite-banner:1.0.0' ```
+``` implementation 'com.github.Marksss:InfiniteBanner:v1.1' ```
 ### XML中的代码
 ```
 <com.github.infinitebanner.InfiniteBannerView

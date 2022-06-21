@@ -4,14 +4,14 @@ English  |  [中文文档](README_cn.md)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
 [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
-[![Download](https://api.bintray.com/packages/markshawn/com.github.markshawn/infinite-banner/images/download.svg)](https://bintray.com/markshawn/com.github.markshawn/infinite-banner/_latestVersion)
+[![](https://jitpack.io/v/Marksss/InfiniteBanner.svg)](https://jitpack.io/#Marksss/InfiniteBanner)
 
 InfiniteBanner is a view that can automatically or manually scroll in a loop for a banner infinitely, which is very easy to use and is similar to ViewPager. Meanwhile, it not only solves the problem that ViewPager cannot scroll infinitely, but also reuses its child views so that less memory will be token while scrolling.
 
 ![demo-gif](https://github.com/Marksss/InfiniteBanner/blob/master/gif/demo.gif)
 ## Usage
 ### Add the dependency to your project `build.gradle` file
-``` implementation 'com.github.markshawn:infinite-banner:1.0.0' ```
+``` implementation 'com.github.Marksss:InfiniteBanner:v1.1' ```
 ### Code in XML
 ```
 <com.github.infinitebanner.InfiniteBannerView
