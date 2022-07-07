@@ -24,7 +24,7 @@ import java.util.List;
  * Created by Marksss on 2019/8/12.
  */
 public class InfiniteBannerView extends ViewGroup {
-    private static final int MAX_SCROLL_X = Integer.MAX_VALUE - Integer.MAX_VALUE >> 3;
+    private static final int MAX_SCROLL_X = Integer.MAX_VALUE - (Integer.MAX_VALUE >> 3);
     private final Pager mPager = new Pager();
     private long mLoopInterval = 3000;
     private AbsBannerAdapter mAdapter;

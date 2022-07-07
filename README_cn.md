@@ -11,7 +11,7 @@ InfiniteBanner是一个能够无限轮播的banner，它的用法简单而且与
 ![demo-gif](https://github.com/Marksss/InfiniteBanner/blob/master/gif/demo.gif)
 ## 用法
 ### 将以下依赖添加到 `build.gradle` 文件中
-``` implementation 'com.github.Marksss:InfiniteBanner:v1.1' ```
+``` implementation 'com.github.Marksss:InfiniteBanner:v1.2' ```
 ### XML中的代码
 ```
 <com.github.infinitebanner.InfiniteBannerView
