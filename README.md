@@ -11,7 +11,7 @@ InfiniteBanner is a view that can automatically or manually scroll in a loop for
 ![demo-gif](https://github.com/Marksss/InfiniteBanner/blob/master/gif/demo.gif)
 ## Usage
 ### Add the dependency to your project `build.gradle` file
-``` implementation 'com.github.Marksss:InfiniteBanner:v1.1' ```
+``` implementation 'com.github.Marksss:InfiniteBanner:v1.2' ```
 ### Code in XML
 ```
 <com.github.infinitebanner.InfiniteBannerView
@@ -20,11 +20,11 @@ InfiniteBanner is a view that can automatically or manually scroll in a loop for
     app:bannerAutoScroll="true"/>
 ```
 If you want it to scroll automatically, just set bannerAutoScroll true. Some other attributes that may be used:
-- bannerDividerWidth：distance between child views；
-- bannerInitialPage：the initial position after refreshing；
-- bannerForegroundWidthPercent：the width of child view that in the middle of container / the container's width（The default value is 1, which means that only one child view can be seen when scolling stops）；
-- bannerLoopInterval：time interval（millisecond）；
-- bannerManuallyScrollLock：if manual scrolling is allowed；
+- bannerDividerWidth：distance between child views;
+- bannerInitialPage：the initial position after refreshing;
+- bannerForegroundWidthPercent：the width of child view that in the middle of container / the container's width（The default value is 1, which means that only one child view can be seen when scolling stops）;
+- bannerLoopInterval：time interval（millisecond）;
+- bannerManuallyScrollLock：if manual scrolling is allowed;
 - bannerScrollReverse：reverse scrolling automatically.
 
 ### Code in Java
